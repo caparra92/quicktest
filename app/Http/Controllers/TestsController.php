@@ -99,4 +99,14 @@ class TestsController extends Controller
 
         $test->delete();
     }
+
+    public function createTest()
+    {
+        //crear nuevo test
+    }
+
+    public function addQuestionTest()
+    {
+        //adicionar preguntas al test
+    }
 }

@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Question extends Model
 {
     protected $fillable = [
+        'course',
         'description',
         'type',
         'level',
-        'is_correct',
         'user_id'
     ];
 

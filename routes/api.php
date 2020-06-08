@@ -27,7 +27,7 @@ Route::group([
     Route::group([
       'middleware' => 'auth:api'
     ], function() {
-        Route::get('logout', 'AuthController@logout');
+        Route::post('logout', 'AuthController@logout');
         Route::get('user', 'AuthController@user');
     });
 });
@@ -36,6 +36,7 @@ Route::get('/users', 'UsersController@index');
 Route::get('/categories', 'CategoriesController@index');
 Route::get('/tests', 'TestsController@index');
 Route::get('/questions', 'QuestionsController@index');
+Route::get('/questions/{question}', 'QuestionsController@findQuestions');
 
 Route::post('/users/new', 'UsersController@store');
 Route::post('/categories/new', 'CategoriesController@store');
@@ -46,6 +47,7 @@ Route::put('/users/{id}', 'UsersController@update');
 Route::put('/categories/{id}', 'CategoriesController@update');
 Route::put('/tests/{id}', 'TestsController@update');
 Route::put('/questions/{id}', 'QuestionsController@update');
+Route::put('/questions/add/{id}', 'QuestionsController@add');
 
 Route::delete('/users/{id}', 'UsersController@destroy');
 Route::delete('/categories/{id}', 'CategoriesController@destroy');

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Answer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Question;
 
 class QuestionsController extends Controller
@@ -38,14 +41,17 @@ class QuestionsController extends Controller
     public function store(Request $request)
     {
         $question = new Question;
-        $question->title = $request->title;
+        $question->course = $request->course;
         $question->description = $request->description;
         $question->type = $request->type;
         $question->level = $request->level;
-        $question->is_correct = $request->is_correct;
-        //$question->user_id = Auth::user()->id;
-
+        $question->user_id = $request->user_id;
         $question->save();
+        $answer = new Answer;
+        $answer->description = $request->answer;
+        $answer->question_id = $question->id;
+        $answer->save();
+        return response()->json($answer);
     }
 
     /**
@@ -85,10 +91,14 @@ class QuestionsController extends Controller
         $question->description = $request->description;
         $question->type = $request->type;
         $question->level = $request->level;
-        $question->is_correct = $request->is_correct;
+        $question->added = $request->added;
         //$question->user_id = Auth::user()->id;
 
         $question->save();
+
+        return response()->json([
+            'message'=> 'Question updated successfully'
+        ]);
     }
 
     /**
@@ -102,5 +112,27 @@ class QuestionsController extends Controller
         $question = Question::find($id);
 
         $question->delete();
+    }
+
+    public function findQuestions($string)
+    {
+        $questions = DB::table('questions')
+                ->where('description', 'like', '%'.$string.'%')
+                ->get();
+
+        return response()->json($questions); 
+    }
+
+    public function add($id)
+    {
+        $question = Question::find($id);
+        $question->added = true;
+
+        $question->save();
+
+        return response()->json([
+            'message'=> 'Question updated successfully',
+            $question
+        ]);
     }
 }

@@ -55,7 +55,7 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
         if(!Auth::attempt($credentials))
             return response()->json([
-                'message' => 'Unauthorized'
+                'message' => 'Unauthorized user :('
             ], 401);
         $user = $request->user();
         $tokenResult = $user->createToken('Personal Access Token');
@@ -68,7 +68,8 @@ class AuthController extends Controller
             'token_type' => 'Bearer',
             'expires_at' => Carbon::parse(
                 $tokenResult->token->expires_at
-            )->toDateTimeString()
+            )->toDateTimeString(),
+            'user_logged'=> Auth::user()
         ]);
     }
   

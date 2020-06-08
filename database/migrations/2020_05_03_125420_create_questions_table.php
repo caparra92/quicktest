@@ -15,11 +15,12 @@ class CreateQuestionsTable extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title');
+            $table->string('course');
             $table->string('description');
             $table->string('type');
             $table->string('level');
-            $table->string('is_correct');
+            $table->boolean('added');
+            //$table->string('is_correct');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
