@@ -19,7 +19,7 @@ class CreateQuestionsTable extends Migration
             $table->string('description');
             $table->string('type');
             $table->string('level');
-            $table->boolean('added');
+            $table->boolean('added')->nullable();
             //$table->string('is_correct');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
