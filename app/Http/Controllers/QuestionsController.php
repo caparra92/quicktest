@@ -47,11 +47,22 @@ class QuestionsController extends Controller
         $question->level = $request->level;
         $question->user_id = $request->user_id;
         $question->save();
-        $answer = new Answer;
+        $answers = json_decode($request->answers, true);
+
+        foreach ($answers as $answer) {
+            $ans = new Answer();
+            $ans->letter = $answer['letter'];
+            $ans->description = $answer['option'];
+            $ans->is_correct = $answer['is_correct'];
+            $ans->question_id = $question->id;
+            $ans->save();
+        }
+
+        /* $answer = new Answer;
         $answer->description = $request->answer;
         $answer->question_id = $question->id;
-        $answer->save();
-        return response()->json($answer);
+        $answer->save(); */
+        return response()->json('Question saved successfully');
     }
 
     /**
@@ -97,7 +108,7 @@ class QuestionsController extends Controller
         $question->save();
 
         return response()->json([
-            'message'=> 'Question updated successfully'
+            'message' => 'Question updated successfully'
         ]);
     }
 
@@ -114,13 +125,29 @@ class QuestionsController extends Controller
         $question->delete();
     }
 
-    public function findQuestions($string)
+    public function findQuestions($string, $type = '')
     {
-        $questions = DB::table('questions')
-                ->where('description', 'like', '%'.$string.'%')
-                ->get();
+        $type = json_decode($type);
 
-        return response()->json($questions); 
+       if ($type == [] || count($type) > 1) {
+        $questions = DB::table('questions')
+        ->where('description', 'like', '%' . $string . '%')
+        ->get();
+       } else {
+        $questions = DB::table('questions')
+        ->where('description', 'like', '%' . $string . '%')
+        ->where('type', '=', $type)
+        ->get();
+       }
+        foreach ($questions as $key => $question) {
+            $answers = DB::table('answers')
+                ->where('question_id', '=', $question->id)
+                ->join('questions', 'questions.id', '=', 'answers.question_id')
+                ->select('answers.letter', 'answers.description', 'answers.is_correct')
+                ->get();
+            $question->answers = $answers;
+        }
+        return response()->json($questions);
     }
 
     public function add($id)
@@ -130,8 +157,29 @@ class QuestionsController extends Controller
 
         $question->save();
 
+        $answers = DB::table('answers')
+            ->where('question_id', '=', $question->id)
+            ->join('questions', 'questions.id', '=', 'answers.question_id')
+            ->select('answers.letter', 'answers.description', 'answers.is_correct')
+            ->get();
+
+        $question->answers = $answers;
+
         return response()->json([
-            'message'=> 'Question updated successfully',
+            'message' => 'Question updated successfully',
+            $question
+        ]);
+    }
+
+    public function remove($id)
+    {
+        $question = Question::find($id);
+        $question->added = false;
+
+        $question->save();
+
+        return response()->json([
+            'message' => 'Question updated successfully',
             $question
         ]);
     }

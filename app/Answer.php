@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Answer extends Model
 {
     protected $fillable = [
+        'letter',
         'description',
         'question_id'
     ];

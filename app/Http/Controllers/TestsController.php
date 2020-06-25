@@ -39,11 +39,15 @@ class TestsController extends Controller
     {
         $test = new Test;
         $test->title = $request->title;
+        $test->course = $request->course;
         $test->description = $request->description;
+        $test->date = $request->date;
         $test->user_id = $request->user_id;
         $test->category_id = $request->category_id;
 
         $test->save();
+
+        return response()->json($test);
     }
 
     /**
