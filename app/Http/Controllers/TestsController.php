@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Test;
+use App\Question;
 
 class TestsController extends Controller
 {
@@ -37,6 +39,15 @@ class TestsController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'title' => 'required|string',
+            'course' => 'required|string',
+            'signature' => 'required|int',
+            'description' => 'required|string',
+            'date' => 'required|date',
+        ]);
+
+        $questions = json_decode($request->questions);
         $test = new Test;
         $test->title = $request->title;
         $test->course = $request->course;
@@ -47,7 +58,19 @@ class TestsController extends Controller
 
         $test->save();
 
-        return response()->json($test);
+        foreach($questions as $key => $question) {
+            $question_test = DB::table('question_test')
+                            ->insert([
+                                ['test_id' => $test->id, 'question_id' => $question->id ]
+                            ]);
+            $quest = Question::find($question->id);
+            $quest->added = false;
+            $quest->save();
+        }
+
+        return response()->json([
+            'message' => 'Test added successfully'
+        ]);
     }
 
     /**
