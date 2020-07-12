@@ -18,6 +18,14 @@ class QuestionsController extends Controller
     public function index()
     {
         $questions = Question::all();
+        foreach ($questions as $key => $question) {
+            $answers = DB::table('answers')
+                ->where('question_id', '=', $question->id)
+                ->join('questions', 'questions.id', '=', 'answers.question_id')
+                ->select('answers.letter', 'answers.description', 'answers.is_correct')
+                ->get();
+            $question->answers = $answers;
+        }
 
         return response()->json($questions);
     }
@@ -122,7 +130,11 @@ class QuestionsController extends Controller
     {
         $question = Question::find($id);
 
+        $question->answers()->delete();
         $question->delete();
+        return response()->json([
+            'message' => 'Question deleted successfully'
+        ]);
     }
 
     public function findQuestions($string, $type = '')
