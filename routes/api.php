@@ -37,6 +37,7 @@ Route::get('/categories', 'CategoriesController@index');
 Route::get('/tests', 'TestsController@index');
 Route::get('/questions', 'QuestionsController@index');
 Route::get('/questions/{question}/{type?}', 'QuestionsController@findQuestions');
+Route::get('/tests/print/{id}/', 'TestsController@printTest');
 
 Route::post('/users/new', 'UsersController@store');
 Route::post('/categories/new', 'CategoriesController@store');

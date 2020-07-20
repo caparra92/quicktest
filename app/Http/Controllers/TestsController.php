@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use App\Test;
 use App\Question;
+use PDF;
+use Illuminate\Support\Facades\App;
 
 class TestsController extends Controller
 {
@@ -58,18 +61,20 @@ class TestsController extends Controller
 
         $test->save();
 
-        foreach($questions as $key => $question) {
+        foreach ($questions as $key => $question) {
             $question_test = DB::table('question_test')
-                            ->insert([
-                                ['test_id' => $test->id, 'question_id' => $question->id ]
-                            ]);
+                ->insert([
+                    ['test_id' => $test->id, 'question_id' => $question->id]
+                ]);
             $quest = Question::find($question->id);
             $quest->added = false;
             $quest->save();
         }
 
         return response()->json([
-            'message' => 'Test added successfully'
+            'message' => 'Test added successfully',
+            'test'=> $test,
+            'questions' => $quest
         ]);
     }
 
@@ -135,5 +140,23 @@ class TestsController extends Controller
     public function addQuestionTest()
     {
         //adicionar preguntas al test
+    }
+
+    public function printTest($id)
+    {
+        $test = Test::find($id);
+        $user_name = DB::table('tests')
+                ->where('user_id', '=', $test->user_id)
+                ->join('users', 'users.id', '=', 'tests.user_id')
+                ->select('users.name')
+                ->first();
+        $signature = DB::table('tests')
+                ->where('category_id', '=', $test->category_id)
+                ->join('categories', 'categories.id', '=', 'tests.category_id')
+                ->select('categories.name')
+                ->first();
+        $pdf = PDF::loadView('test', compact('test','user_name','signature'));
+        return $pdf->download('test.pdf')->header('Content-type','application/pdf');
+        
     }
 }
