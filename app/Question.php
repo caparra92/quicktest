@@ -11,6 +11,8 @@ class Question extends Model
         'description',
         'type',
         'level',
+        'lines_answer',
+        'added',
         'user_id'
     ];
 

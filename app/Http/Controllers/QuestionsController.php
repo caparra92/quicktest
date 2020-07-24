@@ -53,6 +53,7 @@ class QuestionsController extends Controller
         $question->description = $request->description;
         $question->type = $request->type;
         $question->level = $request->level;
+        $question->lines_answer = $request->lines_answer;
         $question->user_id = $request->user_id;
         $question->save();
         $answers = json_decode($request->answers, true);

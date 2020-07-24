@@ -19,6 +19,7 @@ class CreateQuestionsTable extends Migration
             $table->string('description');
             $table->string('type');
             $table->string('level');
+            $table->integer('lines_answer')->nullable();
             $table->boolean('added')->nullable();
             //$table->string('is_correct');
             $table->integer('user_id')->unsigned();

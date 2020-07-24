@@ -47,7 +47,7 @@ class TestsController extends Controller
             'course' => 'required|string',
             'signature' => 'required|int',
             'description' => 'required|string',
-            'date' => 'required|date',
+            'date' => 'required|date'
         ]);
 
         $questions = json_decode($request->questions);
