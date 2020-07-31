@@ -107,17 +107,28 @@ class QuestionsController extends Controller
     {
         $question = Question::find($id);
 
-        $question->name = $request->name;
+        $question->course = $request->course;
         $question->description = $request->description;
         $question->type = $request->type;
         $question->level = $request->level;
         $question->added = $request->added;
+        $question->lines_answer = $request->lines_answer;
         //$question->user_id = Auth::user()->id;
 
         $question->save();
 
         return response()->json([
             'message' => 'Question updated successfully'
+        ]);
+    }
+
+    public function changeLines(Request $request, $id)
+    {
+        Question::where('id',$id)
+                ->update(['lines_answer' => $request->lines_answer]);
+
+        return response()->json([
+            'message' => 'Lines changed successfully'
         ]);
     }
 
