@@ -37,7 +37,7 @@ Route::get('/categories', 'CategoriesController@index');
 Route::get('/tests', 'TestsController@index');
 Route::get('/questions', 'QuestionsController@index');
 Route::get('/questions/{question}/{type?}', 'QuestionsController@findQuestions');
-Route::get('/tests/print/{id}/', 'TestsController@printTest');
+Route::get('/tests/print/', 'TestsController@printTest');
 
 Route::post('/users/new', 'UsersController@store');
 Route::post('/categories/new', 'CategoriesController@store');
@@ -48,6 +48,7 @@ Route::put('/users/{id}', 'UsersController@update');
 Route::put('/categories/{id}', 'CategoriesController@update');
 Route::put('/tests/{id}', 'TestsController@update');
 Route::put('/questions/{id}', 'QuestionsController@update');
+Route::put('/questions/changeLines/{id}', 'QuestionsController@changeLines');
 Route::put('/questions/add/{id}', 'QuestionsController@add');
 Route::put('/questions/remove/{id}', 'QuestionsController@remove');
 

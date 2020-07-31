@@ -142,9 +142,24 @@ class TestsController extends Controller
         //adicionar preguntas al test
     }
 
-    public function printTest($id)
+    public function printTest(Request $request)
     {
-        $test = Test::find($id);
+        $test = Test::find($request->test);
+        $answersSheet = $request->answersSheet;
+        $randomize = $request->randomize;
+        $numberOfTests = $request->numberOfTests;
+        if($randomize === "questionsAndAnswers") {
+            $test->questions->shuffle()->all();
+            foreach($test->questions as $key=>$question) {
+                $question->answers->shuffle()->all();
+            }
+        } elseif($randomize === "onlyQuestions") {
+            $test->questions->shuffle()->all();
+        } elseif($randomize === "onlyAnswers") {
+            foreach($test->questions as $key=>$question) {
+                $question->answers->shuffle()->all();
+            }
+        }
         $user_name = DB::table('tests')
                 ->where('user_id', '=', $test->user_id)
                 ->join('users', 'users.id', '=', 'tests.user_id')
@@ -155,7 +170,7 @@ class TestsController extends Controller
                 ->join('categories', 'categories.id', '=', 'tests.category_id')
                 ->select('categories.name')
                 ->first();
-        $pdf = PDF::loadView('test', compact('test','user_name','signature'));
+        $pdf = PDF::loadView('test', compact('test','user_name','signature','answersSheet','numberOfTests','randomize'));
         return $pdf->download('test.pdf')->header('Content-type','application/pdf');
         
     }
